@@ -97,44 +97,44 @@ resource "aws_api_gateway_resource" "internal_transfers" {
   path_part   = "internal-transfers"
 }
 
-# resource "aws_api_gateway_resource" "execute" {
-#   rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
-#   parent_id   = aws_api_gateway_resource.internal_transfers.id
-#   path_part   = "execute"
-# }
+resource "aws_api_gateway_resource" "execute" {
+  rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
+  parent_id   = aws_api_gateway_resource.internal_transfers.id
+  path_part   = "execute"
+}
 
-# resource "aws_api_gateway_method" "post_execute" {
-#   rest_api_id   = aws_api_gateway_rest_api.dynamic_http_api.id
-#   resource_id   = aws_api_gateway_resource.execute.id
-#   http_method   = "POST"
-#   authorization = "NONE"
-# }
+resource "aws_api_gateway_method" "post_execute" {
+  rest_api_id   = aws_api_gateway_rest_api.dynamic_http_api.id
+  resource_id   = aws_api_gateway_resource.execute.id
+  http_method   = "POST"
+  authorization = "NONE"
+}
 
-# resource "aws_api_gateway_resource" "register" {
-#   rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
-#   parent_id   = aws_api_gateway_resource.internal_transfers.id
-#   path_part   = "register"
-# }
+resource "aws_api_gateway_resource" "register" {
+  rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
+  parent_id   = aws_api_gateway_resource.internal_transfers.id
+  path_part   = "register"
+}
 
-# resource "aws_api_gateway_method" "post_register" {
-#   rest_api_id   = aws_api_gateway_rest_api.dynamic_http_api.id
-#   resource_id   = aws_api_gateway_resource.register.id
-#   http_method   = "POST"
-#   authorization = "NONE"
-# }
+resource "aws_api_gateway_method" "post_register" {
+  rest_api_id   = aws_api_gateway_rest_api.dynamic_http_api.id
+  resource_id   = aws_api_gateway_resource.register.id
+  http_method   = "POST"
+  authorization = "NONE"
+}
 
-# resource "aws_api_gateway_resource" "update" {
-#   rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
-#   parent_id   = aws_api_gateway_resource.internal_transfers.id
-#   path_part   = "update"
-# }
+resource "aws_api_gateway_resource" "update" {
+  rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
+  parent_id   = aws_api_gateway_resource.internal_transfers.id
+  path_part   = "update"
+}
 
-# resource "aws_api_gateway_method" "patch_update" {
-#   rest_api_id   = aws_api_gateway_rest_api.dynamic_http_api.id
-#   resource_id   = aws_api_gateway_resource.update.id
-#   http_method   = "PATCH"
-#   authorization = "NONE"
-# }
+resource "aws_api_gateway_method" "patch_update" {
+  rest_api_id   = aws_api_gateway_rest_api.dynamic_http_api.id
+  resource_id   = aws_api_gateway_resource.update.id
+  http_method   = "PATCH"
+  authorization = "NONE"
+}
 
 resource "aws_api_gateway_resource" "retrieve" {
   rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
@@ -150,38 +150,38 @@ resource "aws_api_gateway_method" "get_retrieve" {
 }
 
 #Configurar las integraciones para usar el VPC Link:
-# resource "aws_api_gateway_integration" "post_execute_integration" {
-#   rest_api_id             = aws_api_gateway_rest_api.dynamic_http_api.id
-#   resource_id             = aws_api_gateway_resource.execute.id
-#   http_method             = aws_api_gateway_method.post_execute.http_method
-#   integration_http_method = "POST"
-#   type                    = "HTTP_PROXY"
-#   uri                     = "http://internal-service.execute"  # Reemplazar con el endpoint de tu servicio interno en EKS
-#   connection_type         = "VPC_LINK"
-#   connection_id           = aws_api_gateway_vpc_link.vpc_link.id
-# }
+resource "aws_api_gateway_integration" "post_execute_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.dynamic_http_api.id
+  resource_id             = aws_api_gateway_resource.execute.id
+  http_method             = aws_api_gateway_method.post_execute.http_method
+  integration_http_method = "POST"
+  type                    = "HTTP_PROXY"
+  uri                     = "http://internal-k8s-default-ingressa-4fbe709689-219581266.us-east-1.elb.amazonaws.com/execute"  # Reemplazar con el endpoint de tu servicio interno en EKS
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.vpc_link.id
+}
 
-# resource "aws_api_gateway_integration" "post_register_integration" {
-#   rest_api_id             = aws_api_gateway_rest_api.dynamic_http_api.id
-#   resource_id             = aws_api_gateway_resource.register.id
-#   http_method             = aws_api_gateway_method.post_register.http_method
-#   integration_http_method = "POST"
-#   type                    = "HTTP_PROXY"
-#   uri                     = "http://internal-service.register"  # "http://${aws_lb.alb.dns_name}/execute" Reemplazar con el endpoint de tu servicio interno en EKS
-#   connection_type         = "VPC_LINK"
-#   connection_id           = aws_api_gateway_vpc_link.vpc_link.id
-# }
+resource "aws_api_gateway_integration" "post_register_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.dynamic_http_api.id
+  resource_id             = aws_api_gateway_resource.register.id
+  http_method             = aws_api_gateway_method.post_register.http_method
+  integration_http_method = "POST"
+  type                    = "HTTP_PROXY"
+  uri                     = "http://internal-k8s-default-ingressa-4fbe709689-219581266.us-east-1.elb.amazonaws.com/register"  # "http://${aws_lb.alb.dns_name}/execute" Reemplazar con el endpoint de tu servicio interno en EKS
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.vpc_link.id
+}
 
-# resource "aws_api_gateway_integration" "patch_update_integration" {
-#   rest_api_id             = aws_api_gateway_rest_api.dynamic_http_api.id
-#   resource_id             = aws_api_gateway_resource.update.id
-#   http_method             = aws_api_gateway_method.patch_update.http_method
-#   integration_http_method = "PATCH"
-#   type                    = "HTTP_PROXY"
-#   uri                     = "http://internal-service.update"  # Reemplazar con el endpoint de tu servicio interno en EKS
-#   connection_type         = "VPC_LINK"
-#   connection_id           = aws_api_gateway_vpc_link.vpc_link.id
-# }
+resource "aws_api_gateway_integration" "patch_update_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.dynamic_http_api.id
+  resource_id             = aws_api_gateway_resource.update.id
+  http_method             = aws_api_gateway_method.patch_update.http_method
+  integration_http_method = "PATCH"
+  type                    = "HTTP_PROXY"
+  uri                     = "http://internal-k8s-default-ingressa-4fbe709689-219581266.us-east-1.elb.amazonaws.com/update"  # Reemplazar con el endpoint de tu servicio interno en EKS
+  connection_type         = "VPC_LINK"
+  connection_id           = aws_api_gateway_vpc_link.vpc_link.id
+}
 
 resource "aws_api_gateway_integration" "get_retrieve_integration" {
   rest_api_id             = aws_api_gateway_rest_api.dynamic_http_api.id
@@ -197,9 +197,9 @@ resource "aws_api_gateway_integration" "get_retrieve_integration" {
 #Configurar el despliegue del API Gateway:
 resource "aws_api_gateway_deployment" "api_deployment" {
   depends_on = [
-    # aws_api_gateway_integration.post_execute_integration,
-    # aws_api_gateway_integration.post_register_integration,
-    # aws_api_gateway_integration.patch_update_integration,
+    aws_api_gateway_integration.post_execute_integration,
+    aws_api_gateway_integration.post_register_integration,
+    aws_api_gateway_integration.patch_update_integration,
     aws_api_gateway_integration.get_retrieve_integration,
   ]
   rest_api_id = aws_api_gateway_rest_api.dynamic_http_api.id
